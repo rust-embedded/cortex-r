@@ -4,6 +4,27 @@ matrix:
   include:
     - env: TARGET=x86_64-unknown-linux-gnu
       if: (branch = staging OR branch = trying) OR (type = pull_request AND branch = master)
+      rust: stable
+
+    - env: TARGET=armebv7r-none-eabi
+      if: (branch = staging OR branch = trying) OR (type = pull_request AND branch = master)
+      rust: stable
+
+    - env: TARGET=armebv7r-none-eabihf
+      if: (branch = staging OR branch = trying) OR (type = pull_request AND branch = master)
+      rust: stable
+
+    - env: TARGET=armv7r-none-eabi
+      if: (branch = staging OR branch = trying) OR (type = pull_request AND branch = master)
+      rust: stable
+
+    - env: TARGET=armv7r-none-eabihf
+      if: (branch = staging OR branch = trying) OR (type = pull_request AND branch = master)
+      rust: stable
+
+    # MSRV
+    - env: TARGET=x86_64-unknown-linux-gnu
+      if: (branch = staging OR branch = trying) OR (type = pull_request AND branch = master)
       rust: 1.31.0
 
     - env: TARGET=armebv7r-none-eabi
