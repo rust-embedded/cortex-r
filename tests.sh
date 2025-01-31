@@ -17,6 +17,8 @@ fail() {
     FAILURE=1
 }
 
+mkdir -p ./target
+
 # armv7r-none-eabi tests
 for binary in hello registers svc; do
     cargo run --target=armv7r-none-eabi --bin $binary | tee ./target/$binary-armv7r-none-eabi.out
