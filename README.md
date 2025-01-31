@@ -1,35 +1,34 @@
-# `cortex-r`
+# Rust on Arm Cortex-R
 
-> Low level access to Cortex-R processors
+This repository contains support libraries for Rust on Arm Cortex-R.
 
-This project is developed and maintained by the [Cortex-R team][team].
+These libraries have been written by Ferrous Systems, and are based on the
+[`cortex-m` libraries] from the [Rust Embedded Devices Working Group].
 
-## Minimum Supported Rust Version (MSRV)
+[`cortex-m` libraries]: https://github.com/rust-embedded/cortex-m
+[Rust Embedded Devices Working Group]: https://github.com/rust-embedded
 
-This crate is guaranteed to compile on stable Rust 1.31.0 and up. It *might*
-compile with older versions but that may change in any new patch release.
+There are currently three libraries here:
 
-## License
+* [cortex-r](./cortex-r/) - support library for Cortex-R CPUs (like [cortex-m])
+* [cortex-r-rt](./cortex-r-rt/) - run-time library for Cortex-R CPUs (like [cortex-m-rt])
+* [arm-targets](./arm-targets/) - a helper library for your build.rs that sets various `--cfg` flags according to the current target
 
-Licensed under either of
+There are also example programs for QEMU in the [cortex-r-examples](./cortex-r-examples/) folder.
 
-- Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE) or
-  http://www.apache.org/licenses/LICENSE-2.0)
-- MIT license ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
+[cortex-m]: https://crates.io/crates/cortex-m
+[cortex-m-rt]: https://crates.io/crates/cortex-m-rt
 
-at your option.
+## Licence
 
-### Contribution
+* Copyright (c) Ferrous Systems, 2025
+* Copyright (c) The Cortex-M Team <cortex-m@teams.rust-embedded.org>
 
-Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in the
-work by you, as defined in the Apache-2.0 license, shall be dual licensed as above, without any
+Licensed under either [MIT](./LICENSE-MIT) or [Apache-2.0](./LICENSE-APACHE) at
+your option.
+
+## Contribution
+
+Unless you explicitly state otherwise, any contribution intentionally submitted
+for inclusion in the work by you shall be licensed as above, without any
 additional terms or conditions.
-
-## Code of Conduct
-
-Contribution to this crate is organized under the terms of the [Rust Code of
-Conduct][CoC], the maintainer of this crate, the [Cortex-R team][team], promises
-to intervene to uphold that code of conduct.
-
-[CoC]: CODE_OF_CONDUCT.md
-[team]: https://github.com/rust-embedded/wg#the-cortex-r-team

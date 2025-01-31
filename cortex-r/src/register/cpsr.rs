@@ -1,0 +1,112 @@
+//! Code for managing the *Current Program Status Register*
+
+/// The current Processor Mode
+#[derive(Debug)]
+#[bitbybit::bitenum(u5, exhaustive = false)]
+pub enum ProcessorMode {
+    /// User Mode
+    Usr = 0b10000,
+    /// FIQ Mode
+    Fiq = 0b10001,
+    /// IRQ Mode
+    Irq = 0b10010,
+    /// Supervisor Mode
+    Svc = 0b10011,
+    /// Monitor Mode
+    Mon = 0b10110,
+    /// Abort Mode
+    Abt = 0b10111,
+    /// Hyp Mode
+    Hyp = 0b11010,
+    /// Undefined Mode
+    Und = 0b11011,
+    /// System Mode
+    Sys = 0b11111,
+}
+
+/// The *Current Program Status Register* (CPSR)
+#[bitbybit::bitfield(u32)]
+pub struct Cpsr {
+    /// Negative Result from ALU
+    #[bits(31..=31, r)]
+    n: bool,
+    /// Zero Result from ALU
+    #[bits(30..=30, r)]
+    z: bool,
+    /// ALU operation Carry Out
+    #[bits(29..=29, r)]
+    c: bool,
+    /// ALU operation Overflow
+    #[bits(28..=28, r)]
+    v: bool,
+    /// Cumulative Saturation
+    #[bits(27..=27, r)]
+    q: bool,
+    /// Jazelle State
+    #[bits(24..=24, r)]
+    j: bool,
+    /// Endianness
+    #[bits(9..=9, rw)]
+    e: bool,
+    /// Asynchronous Aborts
+    #[bits(8..=8, rw)]
+    a: bool,
+    /// Interrupts Enabled
+    #[bits(7..=7, rw)]
+    i: bool,
+    /// Fast Interrupts Enabled
+    #[bits(6..=6, rw)]
+    f: bool,
+    /// Thumb state
+    #[bits(5..=5, rw)]
+    t: bool,
+    /// Processor Mode
+    #[bits(0..=4, rw)]
+    mode: Option<ProcessorMode>,
+}
+
+impl Cpsr {
+    /// Reads the *Current Program Status Register*
+    #[inline]
+    pub fn read() -> Self {
+        let r: u32;
+        // Safety: Reading this register has no side-effects and is atomic
+        #[cfg(target_arch = "arm")]
+        unsafe {
+            core::arch::asm!("mrs {}, CPSR", out(reg) r, options(nomem, nostack, preserves_flags));
+        }
+        #[cfg(not(target_arch = "arm"))]
+        {
+            r = 0;
+        }
+        Self::new_with_raw_value(r)
+    }
+}
+
+impl core::fmt::Debug for Cpsr {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        write!(
+            f,
+            "CPSR {{ N={} Z={} C={} V={} Q={} J={} E={} A={} I={} F={} T={} MODE={:?} }}",
+            self.n() as u8,
+            self.z() as u8,
+            self.c() as u8,
+            self.v() as u8,
+            self.q() as u8,
+            self.j() as u8,
+            self.e() as u8,
+            self.a() as u8,
+            self.i() as u8,
+            self.f() as u8,
+            self.t() as u8,
+            self.mode(),
+        )
+    }
+}
+
+#[cfg(feature = "defmt")]
+impl defmt::Format for Cpsr {
+    fn format(&self, f: defmt::Formatter) {
+        defmt::write!(f, "CPSR {{ N={0=31..32} Z={0=30..31} C={0=29..30} V={0=28..29} Q={0=27..28} J={0=24..25} E={0=9..10} A={0=8..9} I={0=7..8} F={0=6..7} T={0=5..6} MODE={0=0..5} }}", self.0)
+    }
+}

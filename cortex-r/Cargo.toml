@@ -1,0 +1,26 @@
+[package]
+authors = ["Jonathan Pallant <jonathan.pallant@ferrous-systems.com>", "The Cortex-R Team <cortex-r@teams.rust-embedded.org>"]
+description = "CPU support for Arm Cortex-R"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+name = "cortex-r"
+readme = "README.md"
+repository = "https://github.com/rust-embedded/cortex-r.git"
+rust-version = "1.82"
+version = "0.1.0"
+
+[dependencies]
+arbitrary-int = "1.3.0"
+bitbybit = "1.3.3"
+critical-section = {version = "1.2.0", features = ["restore-state-bool"], optional = true}
+defmt = {version = "0.3", optional = true}
+
+[build-dependencies]
+arm-targets = {version = "0.1.0", path = "../arm-targets"}
+
+[features]
+# Adds a critical-section implementation that only disables interrupts.
+# This is not sound on multi-core systems because interrupts are per-core.
+critical-section-single-core = ["critical-section"]
+# Adds defmt::Format implementation for the register types
+defmt = ["dep:defmt"]

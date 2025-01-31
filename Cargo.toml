@@ -1,7 +1,10 @@
-[package]
-authors = ["Cortex-R team <cortex-r@teams.rust-embedded.org>"]
-edition = "2018"
-name = "cortex-r"
-version = "0.1.0-alpha"
-
-[dependencies]
+[workspace]
+exclude = [
+  "arm-targets",
+]
+members = [
+  "cortex-r",
+  "cortex-r-examples",
+  "cortex-r-rt",
+]
+resolver = "2"
