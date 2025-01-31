@@ -5,8 +5,6 @@
 
 rustup target add armv7r-none-eabi
 rustup target add armv7r-none-eabihf
-rustup install nightly # used for Tier 3 armv8r-none-eabihf
-rustup component add rust-src --toolchain=nightly
 
 FAILURE=0
 
@@ -31,11 +29,12 @@ for binary in hello registers svc; do
     diff ./cortex-r-examples/reference/$binary-armv7r-none-eabihf.out ./target/$binary-armv7r-none-eabihf.out || fail $binary "armv7r-none-eabihf"
 done
 
-# armv8r-none-eabihf tests
-for binary in hello registers svc gic; do
-    cargo +nightly run --target=armv8r-none-eabihf --bin $binary --features=gic -Zbuild-std=core | tee ./target/$binary-armv8r-none-eabihf.out
-    diff ./cortex-r-examples/reference/$binary-armv8r-none-eabihf.out ./target/$binary-armv8r-none-eabihf.out || fail $binary "armv8r-none-eabihf"
-done
+# Ubuntu 24.04 supplies QEMU 8, which doesn't support the machine we have configured for this target
+# # armv8r-none-eabihf tests
+# for binary in hello registers svc gic; do
+#     cargo +nightly run --target=armv8r-none-eabihf --bin $binary --features=gic -Zbuild-std=core | tee ./target/$binary-armv8r-none-eabihf.out
+#     diff ./cortex-r-examples/reference/$binary-armv8r-none-eabihf.out ./target/$binary-armv8r-none-eabihf.out || fail $binary "armv8r-none-eabihf"
+# done
 
 if [ "$FAILURE" == "1" ]; then
     echo "Output comparison failed!"
