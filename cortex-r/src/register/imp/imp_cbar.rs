@@ -1,12 +1,12 @@
-//! Code for the *Configuration Base Address Register*
+//! Code for managing IMP_CBAR (*Configuration Base Address Register*)
 
 use crate::register::{SysReg, SysRegRead};
 
-/// The *Configuration Base Address Register* (CBAR)
+/// IMP_CBAR (*Configuration Base Address Register*)
 #[derive(Clone, Copy, PartialEq, Eq)]
-pub struct Cbar(u32);
+pub struct ImpCbar(u32);
 
-impl SysReg for Cbar {
+impl SysReg for ImpCbar {
     const CP: u32 = 15;
     const CRN: u32 = 15;
     const OP1: u32 = 1;
@@ -14,12 +14,12 @@ impl SysReg for Cbar {
     const OP2: u32 = 0;
 }
 
-impl SysRegRead for Cbar {}
+impl SysRegRead for ImpCbar {}
 
-impl Cbar {
-    /// Reads the *Configuration Base Address Register*
+impl ImpCbar {
+    /// Read IMP_CBAR (*Configuration Base Address Register*)
     #[inline]
-    pub fn read() -> Cbar {
+    pub fn read() -> ImpCbar {
         // Safety: this read has no side-effects
         unsafe { Self(<Self as SysRegRead>::read_raw()) }
     }
@@ -30,15 +30,15 @@ impl Cbar {
     }
 }
 
-impl core::fmt::Debug for Cbar {
+impl core::fmt::Debug for ImpCbar {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        write!(f, "CBAR {{ {:010p} }}", self.periphbase())
+        write!(f, "IMP_CBAR {{ {:010p} }}", self.periphbase())
     }
 }
 
 #[cfg(feature = "defmt")]
-impl defmt::Format for Cbar {
+impl defmt::Format for ImpCbar {
     fn format(&self, f: defmt::Formatter) {
-        defmt::write!(f, "CBAR {{ 0x{=usize:08x} }}", self.0 as usize)
+        defmt::write!(f, "IMP_CBAR {{ 0x{=usize:08x} }}", self.0 as usize)
     }
 }

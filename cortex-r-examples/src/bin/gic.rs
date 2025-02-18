@@ -42,7 +42,7 @@ fn dump_cpsr() {
 /// Called by [`kmain`].
 fn main() -> Result<(), core::fmt::Error> {
     // Get the GIC address by reading CBAR
-    let periphbase = cortex_r::register::Cbar::read().periphbase();
+    let periphbase = cortex_r::register::ImpCbar::read().periphbase();
     println!("Found PERIPHBASE {:010p}", periphbase);
     let gicd_base = periphbase.wrapping_byte_add(GICD_BASE_OFFSET);
     let gicr_base = periphbase.wrapping_byte_add(GICR_BASE_OFFSET);

@@ -1,4 +1,4 @@
-//! Code for managing the *Current Program Status Register*
+//! Code for managing CPSR (*Current Program Status Register*)
 
 /// The current Processor Mode
 #[derive(Debug)]
@@ -24,7 +24,7 @@ pub enum ProcessorMode {
     Sys = 0b11111,
 }
 
-/// The *Current Program Status Register* (CPSR)
+/// CPSR (*Current Program Status Register*)
 #[bitbybit::bitfield(u32)]
 pub struct Cpsr {
     /// Negative Result from ALU
@@ -66,7 +66,7 @@ pub struct Cpsr {
 }
 
 impl Cpsr {
-    /// Reads the *Current Program Status Register*
+    /// Read CPSR (*Current Program Status Register*)
     #[inline]
     pub fn read() -> Self {
         let r: u32;
@@ -82,7 +82,7 @@ impl Cpsr {
         Self::new_with_raw_value(r)
     }
 
-    /// Writes the *Current Program Status Register*
+    /// Write CPSR (*Current Program Status Register*)
     ///
     /// # Safety
     ///
@@ -95,10 +95,23 @@ impl Cpsr {
     /// instruction.
     #[inline]
     pub unsafe fn write(_value: Self) {
-        // Safety: We're in an unsafe function
+        // Safety: This is risky, but we're in an unsafe function
         #[cfg(target_arch = "arm")]
         unsafe {
             core::arch::asm!("msr CPSR, {}", in(reg) _value.raw_value());
+        }
+    }
+
+    /// Modify SCTLR (*System Control Register*)
+    #[inline]
+    pub unsafe fn modify<F>(f: F)
+    where
+        F: FnOnce(&mut Self),
+    {
+        let mut value = Self::read();
+        f(&mut value);
+        unsafe {
+            Self::write(value);
         }
     }
 }
@@ -127,6 +140,6 @@ impl core::fmt::Debug for Cpsr {
 #[cfg(feature = "defmt")]
 impl defmt::Format for Cpsr {
     fn format(&self, f: defmt::Formatter) {
-        defmt::write!(f, "CPSR {{ N={0=31..32} Z={0=30..31} C={0=29..30} V={0=28..29} Q={0=27..28} J={0=24..25} E={0=9..10} A={0=8..9} I={0=7..8} F={0=6..7} T={0=5..6} MODE={0=0..5} }}", self.0)
+        defmt::write!(f, "CPSR {{ N={0=31..32} Z={0=30..31} C={0=29..30} V={0=28..29} Q={0=27..28} J={0=24..25} E={0=9..10} A={0=8..9} I={0=7..8} F={0=6..7} T={0=5..6} MODE={0=0..5} }}", self.raw_value())
     }
 }

@@ -22,7 +22,7 @@ pub extern "C" fn kmain() {
     println!("{:?}", cortex_r::register::Cpsr::read());
     #[cfg(arm_architecture = "v8-r")]
     {
-        println!("{:?}", cortex_r::register::Cbar::read());
+        println!("{:?}", cortex_r::register::ImpCbar::read());
         println!("{:?}", cortex_r::register::Vbar::read());
         // This only works in EL2 and start-up put us in EL1
         // println!("{:?}", cortex_r::register::Hvbar::read());

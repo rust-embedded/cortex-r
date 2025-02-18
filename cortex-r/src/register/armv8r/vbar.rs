@@ -1,8 +1,8 @@
-//! Code for the *Vector Base Address Register*
+//! Code for managing VBAR (*Vector Base Address Register*)
 
 use crate::register::{SysReg, SysRegRead, SysRegWrite};
 
-/// The *Vector Base Address Register* (VBAR)
+/// VBAR (*Vector Base Address Register*)
 ///
 /// There is no `modify` method because this register holds a single 32-bit address.
 #[derive(Clone, Copy, PartialEq, Eq)]
@@ -22,14 +22,14 @@ impl SysRegRead for Vbar {}
 impl SysRegWrite for Vbar {}
 
 impl Vbar {
-    /// Reads the *Vector Base Address Register*
+    /// Read VBAR (*Vector Base Address Register*)
     #[inline]
     pub fn read() -> Vbar {
         // Safety: Reading this register has no side-effects and is atomic
         unsafe { Self(<Self as SysRegRead>::read_raw() as *mut u32) }
     }
 
-    /// Write to the *Vector Base Address Register*
+    /// Write VBAR (*Vector Base Address Register*)
     ///
     /// # Safety
     ///

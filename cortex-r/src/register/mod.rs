@@ -1,39 +1,273 @@
 //! Access registers in Armv7-R and Armv8-R
 
+pub mod actlr;
+pub mod actlr2;
+pub mod adfsr;
+pub mod aidr;
+pub mod aifsr;
+pub mod amair0;
+pub mod amair1;
+pub mod ccsidr;
+pub mod clidr;
+pub mod cntfrq;
+pub mod cnthp_tval;
+pub mod cntkctl;
+pub mod cntp_ctl;
+pub mod cntp_tval;
+pub mod cntv_ctl;
+pub mod cntv_tval;
+pub mod contextidr;
+pub mod cpacr;
 pub mod cpsr;
-#[doc(inline)]
+pub mod csselr;
+pub mod ctr;
+pub mod dfar;
+pub mod dfsr;
+pub mod dlr;
+pub mod dspsr;
+pub mod fcseidr;
+pub mod icc_pmr;
+pub mod id_afr0;
+pub mod id_dfr0;
+pub mod id_isar0;
+pub mod id_isar1;
+pub mod id_isar2;
+pub mod id_isar3;
+pub mod id_isar4;
+pub mod id_isar5;
+pub mod id_mmfr0;
+pub mod id_mmfr1;
+pub mod id_mmfr2;
+pub mod id_mmfr3;
+pub mod id_mmfr4;
+pub mod id_pfr0;
+pub mod id_pfr1;
+pub mod ifar;
+pub mod ifsr;
+pub mod imp;
+pub mod mair0;
+pub mod mair1;
+pub mod midr;
+pub mod mpidr;
+pub mod mpuir;
+pub mod nsacr;
+pub mod par;
+pub mod pmccfiltr;
+pub mod pmccntr;
+pub mod pmceid0;
+pub mod pmceid1;
+pub mod pmcntenclr;
+pub mod pmcntenset;
+pub mod pmcr;
+pub mod pmevcntr0;
+pub mod pmevcntr1;
+pub mod pmevcntr2;
+pub mod pmevcntr3;
+pub mod pmevtyper0;
+pub mod pmevtyper1;
+pub mod pmevtyper2;
+pub mod pmevtyper3;
+pub mod pmintenclr;
+pub mod pmintenset;
+pub mod pmovsr;
+pub mod pmovsset;
+pub mod pmselr;
+pub mod pmswinc;
+pub mod pmuserenr;
+pub mod pmxevcntr;
+pub mod pmxevtyper;
+pub mod prbar;
+pub mod prbar0;
+pub mod prbar1;
+pub mod prbar10;
+pub mod prbar11;
+pub mod prbar12;
+pub mod prbar13;
+pub mod prbar14;
+pub mod prbar15;
+pub mod prbar2;
+pub mod prbar3;
+pub mod prbar4;
+pub mod prbar5;
+pub mod prbar6;
+pub mod prbar7;
+pub mod prbar8;
+pub mod prbar9;
+pub mod prlar;
+pub mod prlar0;
+pub mod prlar1;
+pub mod prlar10;
+pub mod prlar11;
+pub mod prlar12;
+pub mod prlar13;
+pub mod prlar14;
+pub mod prlar15;
+pub mod prlar2;
+pub mod prlar3;
+pub mod prlar4;
+pub mod prlar5;
+pub mod prlar6;
+pub mod prlar7;
+pub mod prlar8;
+pub mod prlar9;
+pub mod prselr;
+pub mod revidr;
+pub mod rvbar;
+pub mod sctlr;
+pub mod tcmtr;
+pub mod tlbtr;
+pub mod tpidrprw;
+pub mod tpidruro;
+pub mod tpidrurw;
+pub mod vmpidr;
+pub mod vpidr;
+pub mod vsctlr;
+
+pub use actlr::Actlr;
+pub use actlr2::Actlr2;
+pub use adfsr::Adfsr;
+pub use aidr::Aidr;
+pub use aifsr::Aifsr;
+pub use amair0::Amair0;
+pub use amair1::Amair1;
+pub use ccsidr::Ccsidr;
+pub use clidr::Clidr;
+pub use cntfrq::Cntfrq;
+pub use cnthp_tval::CnthpTval;
+pub use cntkctl::Cntkctl;
+pub use cntp_ctl::CntpCtl;
+pub use cntp_tval::CntpTval;
+pub use cntv_ctl::CntvCtl;
+pub use cntv_tval::CntvTval;
+pub use contextidr::Contextidr;
+pub use cpacr::Cpacr;
 pub use cpsr::Cpsr;
-
-mod midr;
-#[doc(inline)]
+pub use csselr::Csselr;
+pub use ctr::Ctr;
+pub use dfar::Dfar;
+pub use dfsr::Dfsr;
+pub use dlr::Dlr;
+pub use dspsr::Dspsr;
+pub use fcseidr::Fcseidr;
+pub use icc_pmr::IccPmr;
+pub use id_afr0::IdAfr0;
+pub use id_dfr0::IdDfr0;
+pub use id_isar0::IdIsar0;
+pub use id_isar1::IdIsar1;
+pub use id_isar2::IdIsar2;
+pub use id_isar3::IdIsar3;
+pub use id_isar4::IdIsar4;
+pub use id_isar5::IdIsar5;
+pub use id_mmfr0::IdMmfr0;
+pub use id_mmfr1::IdMmfr1;
+pub use id_mmfr2::IdMmfr2;
+pub use id_mmfr3::IdMmfr3;
+pub use id_mmfr4::IdMmfr4;
+pub use id_pfr0::IdPfr0;
+pub use id_pfr1::IdPfr1;
+pub use ifar::Ifar;
+pub use ifsr::Ifsr;
+pub use mair0::Mair0;
+pub use mair1::Mair1;
 pub use midr::Midr;
-
-mod sctlr;
-#[doc(inline)]
+pub use mpidr::Mpidr;
+pub use mpuir::Mpuir;
+pub use nsacr::Nsacr;
+pub use par::Par;
+pub use pmccfiltr::Pmccfiltr;
+pub use pmccntr::Pmccntr;
+pub use pmceid0::Pmceid0;
+pub use pmceid1::Pmceid1;
+pub use pmcntenclr::Pmcntenclr;
+pub use pmcntenset::Pmcntenset;
+pub use pmcr::Pmcr;
+pub use pmevcntr0::Pmevcntr0;
+pub use pmevcntr1::Pmevcntr1;
+pub use pmevcntr2::Pmevcntr2;
+pub use pmevcntr3::Pmevcntr3;
+pub use pmevtyper0::Pmevtyper0;
+pub use pmevtyper1::Pmevtyper1;
+pub use pmevtyper2::Pmevtyper2;
+pub use pmevtyper3::Pmevtyper3;
+pub use pmintenclr::Pmintenclr;
+pub use pmintenset::Pmintenset;
+pub use pmovsr::Pmovsr;
+pub use pmovsset::Pmovsset;
+pub use pmselr::Pmselr;
+pub use pmswinc::Pmswinc;
+pub use pmuserenr::Pmuserenr;
+pub use pmxevcntr::Pmxevcntr;
+pub use pmxevtyper::Pmxevtyper;
+pub use prbar::Prbar;
+pub use prbar0::Prbar0;
+pub use prbar1::Prbar1;
+pub use prbar10::Prbar10;
+pub use prbar11::Prbar11;
+pub use prbar12::Prbar12;
+pub use prbar13::Prbar13;
+pub use prbar14::Prbar14;
+pub use prbar15::Prbar15;
+pub use prbar2::Prbar2;
+pub use prbar3::Prbar3;
+pub use prbar4::Prbar4;
+pub use prbar5::Prbar5;
+pub use prbar6::Prbar6;
+pub use prbar7::Prbar7;
+pub use prbar8::Prbar8;
+pub use prbar9::Prbar9;
+pub use prlar::Prlar;
+pub use prlar0::Prlar0;
+pub use prlar1::Prlar1;
+pub use prlar10::Prlar10;
+pub use prlar11::Prlar11;
+pub use prlar12::Prlar12;
+pub use prlar13::Prlar13;
+pub use prlar14::Prlar14;
+pub use prlar15::Prlar15;
+pub use prlar2::Prlar2;
+pub use prlar3::Prlar3;
+pub use prlar4::Prlar4;
+pub use prlar5::Prlar5;
+pub use prlar6::Prlar6;
+pub use prlar7::Prlar7;
+pub use prlar8::Prlar8;
+pub use prlar9::Prlar9;
+pub use prselr::Prselr;
+pub use revidr::Revidr;
+pub use rvbar::Rvbar;
 pub use sctlr::Sctlr;
+pub use tcmtr::Tcmtr;
+pub use tlbtr::Tlbtr;
+pub use tpidrprw::Tpidrprw;
+pub use tpidruro::Tpidruro;
+pub use tpidrurw::Tpidrurw;
+pub use vmpidr::Vmpidr;
+pub use vpidr::Vpidr;
+pub use vsctlr::Vsctlr;
 
 #[cfg(arm_architecture = "v8-r")]
-mod armv8r;
-#[doc(inline)]
+pub mod armv8r;
 #[cfg(arm_architecture = "v8-r")]
 pub use armv8r::*;
 
+pub use imp::*;
+
 /// Describes a System Register
-trait SysReg {
+pub trait SysReg {
     /// Which Co-Processor (e.g. 15 for CP15) is this register in?
     const CP: u32;
     /// Which CRn argument (e.g. 0 for c0) accesses this register
     const CRN: u32;
     /// Which OP1 argument accesses this register
     const OP1: u32;
-    /// Which CRm argument (e.g. 0 for c0) accesses this register
+    /// Which CRm argument (e.g. 1 for c1) accesses this register
     const CRM: u32;
     /// Which OP2 argument accesses this register
     const OP2: u32;
 }
 
 /// Readable System Registers
-trait SysRegRead: SysReg {
+pub trait SysRegRead: SysReg {
     #[inline]
     unsafe fn read_raw() -> u32 {
         let r: u32;
@@ -59,7 +293,7 @@ trait SysRegRead: SysReg {
 }
 
 /// Writable System Registers
-trait SysRegWrite: SysReg {
+pub trait SysRegWrite: SysReg {
     #[inline]
     unsafe fn write_raw(_value: u32) {
         #[cfg(target_arch = "arm")]
@@ -77,35 +311,3 @@ trait SysRegWrite: SysReg {
         }
     }
 }
-
-// TODO:
-
-// Multiprocessor Affinity Register (MPIDR)
-
-// System Control Register
-
-// Auxilliary Control Register
-
-// Coprocessor Access Control Register
-
-// Data Fault Status Register
-
-// Instruction Fault Status Register
-
-// Data Fault Address Register
-
-// Instruction Fault Address Register
-
-// MPU Region Base Address Register
-
-// MPU Region Size and Enable Register
-
-// MPU Region Access Control Register
-
-// MPU Region Number Register
-
-// Context ID Register
-
-// Software Thread ID Register
-
-// Configuration Base Address Register

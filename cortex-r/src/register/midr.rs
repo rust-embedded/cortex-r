@@ -1,10 +1,10 @@
-//! Code for managing the *Main ID Register*
+//! Code for managing MIDR (*Main ID Register*)
 
 use arbitrary_int::{u12, u4};
 
 use super::{SysReg, SysRegRead};
 
-/// The *Main ID Register* (MIDR)
+/// MIDR (*Main ID Register*)
 #[bitbybit::bitfield(u32)]
 pub struct Midr {
     /// Implementer
@@ -35,7 +35,7 @@ impl SysReg for Midr {
 impl SysRegRead for Midr {}
 
 impl Midr {
-    /// Reads the *Main ID Register*
+    /// Read MIDR (*Main ID Register*)
     #[inline]
     pub fn read() -> Midr {
         // Safety: Reading this register has no side-effects and is atomic
@@ -53,6 +53,6 @@ impl core::fmt::Debug for Midr {
 #[cfg(feature = "defmt")]
 impl defmt::Format for Midr {
     fn format(&self, f: defmt::Formatter) {
-        defmt::write!(f, "MIDR {{ implementer=0x{0=24..32:02x} variant=0x{0=20..24:x} arch=0x{0=16..20:x} part_no=0x{0=4..16:03x} rev=0x{0=0..4:x} }}", self.0)
+        defmt::write!(f, "MIDR {{ implementer=0x{0=24..32:02x} variant=0x{0=20..24:x} arch=0x{0=16..20:x} part_no=0x{0=4..16:03x} rev=0x{0=0..4:x} }}", self.raw_value())
     }
 }

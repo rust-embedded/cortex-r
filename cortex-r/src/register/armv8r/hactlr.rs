@@ -1,8 +1,8 @@
-//! Code for managing the *Hyp Auxiliary Control Register*
+//! Code for managing HACTRL (*Hyp Auxiliary Control Register*)
 
 use crate::register::{SysReg, SysRegRead, SysRegWrite};
 
-/// The *Hyp Auxiliary Control Register* (HACTRL)
+/// HACTRL (*Hyp Auxiliary Control Register*)
 #[bitbybit::bitfield(u32)]
 pub struct Hactlr {
     /// Controls access to IMP_TESTR1 at EL0 and EL1
@@ -48,14 +48,14 @@ impl SysRegRead for Hactlr {}
 impl SysRegWrite for Hactlr {}
 
 impl Hactlr {
-    /// Reads the *Hyp Auxiliary Control Register*
+    /// Read HACTRL (*Hyp Auxiliary Control Register*)
     #[inline]
     pub fn read() -> Hactlr {
         // Safety: Reading this register has no side-effects and is atomic
         unsafe { Self::new_with_raw_value(<Self as SysRegRead>::read_raw()) }
     }
 
-    /// Write to the *Hyp Auxiliary Control Register*
+    /// Write HACTRL (*Hyp Auxiliary Control Register*)
     #[inline]
     pub fn write(value: Self) {
         // Safety: Writing this register is atomic
@@ -64,7 +64,7 @@ impl Hactlr {
         }
     }
 
-    /// Modify the *Hyp Auxiliary Control Register*
+    /// Modify HACTRL (*Hyp Auxiliary Control Register*)
     #[inline]
     pub fn modify<F>(f: F)
     where
@@ -95,6 +95,6 @@ impl core::fmt::Debug for Hactlr {
 #[cfg(feature = "defmt")]
 impl defmt::Format for Hactlr {
     fn format(&self, f: defmt::Formatter) {
-        defmt::write!(f, "HACTLR {{ CPUACTLR={0=0..1}, CDBGDCI={0=1..2}, FLASHIFREGIONR={0=7..8}, PERIPHPREGIONR={0=8..9}, QOSR={0=9..10}, BUSTIMEOUTR={0=10..11}, INTMONR={0=12..13}, ERR={0=13..14}, TESTR1={0=15..16} }}", self.0)
+        defmt::write!(f, "HACTLR {{ CPUACTLR={0=0..1}, CDBGDCI={0=1..2}, FLASHIFREGIONR={0=7..8}, PERIPHPREGIONR={0=8..9}, QOSR={0=9..10}, BUSTIMEOUTR={0=10..11}, INTMONR={0=12..13}, ERR={0=13..14}, TESTR1={0=15..16} }}", self.raw_value())
     }
 }
