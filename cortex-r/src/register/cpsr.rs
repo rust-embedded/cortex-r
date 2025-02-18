@@ -81,6 +81,26 @@ impl Cpsr {
         }
         Self::new_with_raw_value(r)
     }
+
+    /// Writes the *Current Program Status Register*
+    ///
+    /// # Safety
+    ///
+    /// Changing the Program Status Register can affect whether interrupts are
+    /// enabled, whether we are executing Arm or Thumb instructions, or which
+    /// processor mode are in. You must be absolutely certain that the new CPSR
+    /// value is valid and appropriate for continued Rust code execution.
+    ///
+    /// You almost certainly want to follow this with an [ISB](crate::asm::isb)
+    /// instruction.
+    #[inline]
+    pub unsafe fn write(_value: Self) {
+        // Safety: We're in an unsafe function
+        #[cfg(target_arch = "arm")]
+        unsafe {
+            core::arch::asm!("msr CPSR, {}", in(reg) _value.raw_value());
+        }
+    }
 }
 
 impl core::fmt::Debug for Cpsr {
