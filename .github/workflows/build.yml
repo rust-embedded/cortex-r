@@ -28,6 +28,8 @@ jobs:
       - name: Build
         run: |
           cargo build --target ${{ matrix.target }}
+          cargo build --target ${{ matrix.target }} --no-default-features
+          cargo build --target ${{ matrix.target }} --all-features
 
   # Build the host tools
   build-host:
@@ -99,6 +101,8 @@ jobs:
       - name: Build docs
         run: |
           cargo doc --target ${{ matrix.target }}
+          cargo doc --target ${{ matrix.target }} --no-default-features
+          cargo doc --target ${{ matrix.target }} --all-features
 
   # Build the docs for the host tools
   docs-host:
@@ -184,6 +188,8 @@ jobs:
       - name: Clippy
         run: |
           cargo clippy --target ${{ matrix.target }}
+          cargo clippy --target ${{ matrix.target }} --no-default-features
+          cargo clippy --target ${{ matrix.target }} --all-features
 
   # Run clippy on the host tools
   clippy-host:
