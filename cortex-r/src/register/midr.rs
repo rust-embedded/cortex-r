@@ -2,6 +2,8 @@
 
 use arbitrary_int::{u12, u4};
 
+use super::{SysReg, SysRegRead};
+
 /// The *Main ID Register* (MIDR)
 #[bitbybit::bitfield(u32)]
 pub struct Midr {
@@ -22,21 +24,22 @@ pub struct Midr {
     rev: u4,
 }
 
+impl SysReg for Midr {
+    const CP: u32 = 15;
+    const CRN: u32 = 0;
+    const OP1: u32 = 0;
+    const CRM: u32 = 0;
+    const OP2: u32 = 0;
+}
+
+impl SysRegRead for Midr {}
+
 impl Midr {
     /// Reads the *Main ID Register*
     #[inline]
     pub fn read() -> Midr {
-        let r: u32;
         // Safety: Reading this register has no side-effects and is atomic
-        #[cfg(target_arch = "arm")]
-        unsafe {
-            core::arch::asm!("mrc p15, 0, {}, c0, c0, 0", out(reg) r, options(nomem, nostack, preserves_flags));
-        }
-        #[cfg(not(target_arch = "arm"))]
-        {
-            r = 0;
-        }
-        Self::new_with_raw_value(r)
+        unsafe { Self::new_with_raw_value(<Self as SysRegRead>::read_raw()) }
     }
 }
 

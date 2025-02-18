@@ -1,5 +1,7 @@
 //! Code for managing the *Hyp Auxiliary Control Register*
 
+use crate::register::{SysReg, SysRegRead, SysRegWrite};
+
 /// The *Hyp Auxiliary Control Register* (HACTRL)
 #[bitbybit::bitfield(u32)]
 pub struct Hactlr {
@@ -33,31 +35,33 @@ pub struct Hactlr {
     cpuactlr: bool,
 }
 
+impl SysReg for Hactlr {
+    const CP: u32 = 15;
+    const CRN: u32 = 1;
+    const OP1: u32 = 4;
+    const CRM: u32 = 0;
+    const OP2: u32 = 1;
+}
+
+impl SysRegRead for Hactlr {}
+
+impl SysRegWrite for Hactlr {}
+
 impl Hactlr {
     /// Reads the *Hyp Auxiliary Control Register*
     #[inline]
     pub fn read() -> Hactlr {
-        let r: u32;
         // Safety: Reading this register has no side-effects and is atomic
-        #[cfg(target_arch = "arm")]
-        unsafe {
-            core::arch::asm!("mrc p15, 4, {}, c1, c0, 1", out(reg) r, options(nomem, nostack, preserves_flags));
-        }
-        #[cfg(not(target_arch = "arm"))]
-        {
-            r = 0;
-        }
-        Self::new_with_raw_value(r)
+        unsafe { Self::new_with_raw_value(<Self as SysRegRead>::read_raw()) }
     }
 
     /// Write to the *Hyp Auxiliary Control Register*
     #[inline]
-    pub fn write(_value: Self) {
+    pub fn write(value: Self) {
         // Safety: Writing this register is atomic
-        #[cfg(target_arch = "arm")]
         unsafe {
-            core::arch::asm!("mcr p15, 4, {}, c1, c0, 1", in(reg) _value.raw_value(), options(nomem, nostack, preserves_flags));
-        };
+            <Self as SysRegWrite>::write_raw(value.raw_value());
+        }
     }
 
     /// Modify the *Hyp Auxiliary Control Register*

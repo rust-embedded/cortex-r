@@ -1,23 +1,27 @@
 //! Code for the *Configuration Base Address Register*
 
+use crate::register::{SysReg, SysRegRead};
+
 /// The *Configuration Base Address Register* (CBAR)
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub struct Cbar(u32);
+
+impl SysReg for Cbar {
+    const CP: u32 = 15;
+    const CRN: u32 = 15;
+    const OP1: u32 = 1;
+    const CRM: u32 = 3;
+    const OP2: u32 = 0;
+}
+
+impl SysRegRead for Cbar {}
 
 impl Cbar {
     /// Reads the *Configuration Base Address Register*
     #[inline]
     pub fn read() -> Cbar {
-        let r: u32;
-        #[cfg(target_arch = "arm")]
-        unsafe {
-            core::arch::asm!("mrc p15, 1, {}, c15, c3, 0", out(reg) r, options(nomem, nostack, preserves_flags));
-        }
-        #[cfg(not(target_arch = "arm"))]
-        {
-            r = 0;
-        }
-        Self(r)
+        // Safety: this read has no side-effects
+        unsafe { Self(<Self as SysRegRead>::read_raw()) }
     }
 
     /// Get the periphbase address

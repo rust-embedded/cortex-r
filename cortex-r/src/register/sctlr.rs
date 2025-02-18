@@ -1,5 +1,7 @@
 //! Code for managing the *System Control Register*
 
+use super::{SysReg, SysRegRead, SysRegWrite};
+
 /// The *System Control Register* (SCTLR)
 #[bitbybit::bitfield(u32)]
 pub struct Sctlr {
@@ -53,31 +55,32 @@ pub struct Sctlr {
     m: bool,
 }
 
+impl SysReg for Sctlr {
+    const CP: u32 = 15;
+    const CRN: u32 = 1;
+    const OP1: u32 = 0;
+    const CRM: u32 = 0;
+    const OP2: u32 = 0;
+}
+
+impl SysRegRead for Sctlr {}
+
+impl SysRegWrite for Sctlr {}
+
 impl Sctlr {
     /// Reads the *System Control Register*
     #[inline]
     pub fn read() -> Self {
-        let r: u32;
-        // Safety: Reading this register has no side-effects and is atomic
-        #[cfg(target_arch = "arm")]
-        unsafe {
-            core::arch::asm!("mrc p15, 0, {}, c1, c0, 0", out(reg) r, options(nomem, nostack, preserves_flags));
-        }
-        #[cfg(not(target_arch = "arm"))]
-        {
-            r = 0;
-        }
-        Self::new_with_raw_value(r)
+        unsafe { Self::new_with_raw_value(<Self as SysRegRead>::read_raw()) }
     }
 
     /// Write to the *System Control Register*
     #[inline]
     pub fn write(_value: Self) {
         // Safety: Writing this register is atomic
-        #[cfg(target_arch = "arm")]
         unsafe {
-            core::arch::asm!("mcr p15, 0, {}, c1, c0, 0", in(reg) _value.raw_value(), options(nomem, nostack, preserves_flags));
-        };
+            <Self as SysRegWrite>::write_raw(_value.raw_value());
+        }
     }
 
     /// Modify the *System Control Register*
