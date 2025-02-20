@@ -24,10 +24,8 @@ impl Prselr {
     #[inline]
     /// Writes PRSELR (*Protection Region Selection Register*)
     ///
-    /// # Safety
-    ///
-    /// Ensure that this value is appropriate for this register
-    pub unsafe fn write(value: Self) {
+    /// Controls what appears in PRLAR and PRBAR
+    pub fn write(value: Self) {
         unsafe {
             <Self as SysRegWrite>::write_raw(value.0);
         }

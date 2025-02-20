@@ -217,8 +217,22 @@ jobs:
     steps:
       - run: /bin/true
 
+  # Run the unit tests
+  unit-test:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install rust
+        run: |
+          rustup install stable
+          rustup default stable
+      - name: Run cargo test
+        run: |
+          cargo test --manifest-path cortex-r/Cargo.toml
+
   # Run some programs in QEMU
-  test:
+  qemu-test:
     runs-on: ubuntu-24.04
     needs: [build-all]
     steps:
@@ -230,6 +244,6 @@ jobs:
   # Gather all the above xxx-all jobs together for the purposes of getting an overall pass-fail
   all:
     runs-on: ubuntu-24.04
-    needs: [docs-all, build-all, fmt-all, test] # not gating on clippy-all
+    needs: [docs-all, build-all, fmt-all, unit-test, qemu-test] # not gating on clippy-all
     steps:
       - run: /bin/true

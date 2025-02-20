@@ -11,6 +11,9 @@ pub mod interrupt;
 
 pub mod asm;
 
+#[cfg(arm_architecture = "v8-r")]
+pub mod pmsav8;
+
 /// Generate an SVC call with the given argument.
 ///
 /// Safe to call even in Supervisor (Svc) mode, as long as your Svc handler
