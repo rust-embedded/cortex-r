@@ -7,7 +7,7 @@
 
 use crate::register;
 
-use arbitrary_int::u3;
+use arbitrary_int::{u2, u3};
 #[doc(inline)]
 pub use register::drsr::RegionSize;
 
@@ -347,10 +347,10 @@ impl MemAttrBits {
             (0b010, false, false) => Some(MemAttr::Device { shareable: false }),
             (tex, c, b) if tex >= 0b100 => {
                 let outer = tex & 0b11;
-                let inner = if c { 2 } else { 0 } | if b { 1 } else { 0 };
+                let inner = (c as u8) << 1 | (b as u8);
                 Some(MemAttr::Cacheable {
-                    outer: CacheablePolicy::decode(outer),
-                    inner: CacheablePolicy::decode(inner),
+                    outer: CacheablePolicy::new_with_raw_value(u2::from_u8(outer)),
+                    inner: CacheablePolicy::new_with_raw_value(u2::from_u8(inner)),
                     shareable: self.s,
                 })
             }
@@ -363,24 +363,13 @@ impl MemAttrBits {
 }
 
 /// Describes the cache policy of a region
-#[derive(Debug, Copy, Clone, PartialEq, Eq)]
-#[repr(u8)]
+#[derive(Debug, PartialEq, Eq)]
+#[bitbybit::bitenum(u2, exhaustive = true)]
 pub enum CacheablePolicy {
     NonCacheable = 0b00,
     WriteBackWriteAllocate = 0b01,
     WriteThroughNoWriteAllocate = 0b10,
     WriteBackNoWriteAllocate = 0b11,
-}
-
-impl CacheablePolicy {
-    const fn decode(input: u8) -> CacheablePolicy {
-        match input {
-            0b00 => CacheablePolicy::NonCacheable,
-            0b01 => CacheablePolicy::WriteBackWriteAllocate,
-            0b10 => CacheablePolicy::WriteThroughNoWriteAllocate,
-            _ => CacheablePolicy::WriteBackNoWriteAllocate,
-        }
-    }
 }
 
 #[cfg(test)]
