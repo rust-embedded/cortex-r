@@ -3,7 +3,7 @@
 use crate::register::{SysReg, SysRegRead, SysRegWrite};
 
 /// IRBAR (*Instruction Region Base Address Register*)
-pub struct Irbar(pub u32);
+pub struct Irbar(pub *mut u8);
 impl SysReg for Irbar {
     const CP: u32 = 15;
     const CRN: u32 = 6;
@@ -18,7 +18,7 @@ impl Irbar {
     ///
     /// Set RGNR to control which region this reads.
     pub fn read() -> Irbar {
-        unsafe { Self(<Self as SysRegRead>::read_raw()) }
+        unsafe { Self(<Self as SysRegRead>::read_raw() as *mut u8) }
     }
 }
 
@@ -29,6 +29,6 @@ impl Irbar {
     ///
     /// Set RGNR to control which region this affects.
     pub fn write(value: Irbar) {
-        unsafe { <Self as SysRegWrite>::write_raw(value.0) }
+        unsafe { <Self as SysRegWrite>::write_raw(value.0 as u32) }
     }
 }

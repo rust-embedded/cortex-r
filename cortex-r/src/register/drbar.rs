@@ -3,7 +3,8 @@
 use crate::register::{SysReg, SysRegRead, SysRegWrite};
 
 /// DRBAR (*Data Region Base Address Register*)
-pub struct Drbar(pub u32);
+pub struct Drbar(pub *mut u8);
+
 impl SysReg for Drbar {
     const CP: u32 = 15;
     const CRN: u32 = 6;
@@ -18,7 +19,7 @@ impl Drbar {
     ///
     /// Set RGNR to control which region this reads.
     pub fn read() -> Drbar {
-        unsafe { Self(<Self as SysRegRead>::read_raw()) }
+        unsafe { Self(<Self as SysRegRead>::read_raw() as *mut u8) }
     }
 }
 
@@ -29,6 +30,6 @@ impl Drbar {
     ///
     /// Set RGNR to control which region this affects.
     pub fn write(value: Drbar) {
-        unsafe { <Self as SysRegWrite>::write_raw(value.0) }
+        unsafe { <Self as SysRegWrite>::write_raw(value.0 as u32) }
     }
 }

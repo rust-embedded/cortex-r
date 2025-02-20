@@ -37,28 +37,54 @@ fn chip_info() {
 
 #[cfg(arm_architecture = "v7-r")]
 fn mpu_pmsa_v7() {
-    // No nice API for PMSAv7 at this time, so show raw register contents
-    let mpuir = cortex_r::register::Mpuir::read();
+    use cortex_r::{
+        pmsav7::{CacheablePolicy, Config, MemAttr, Mpu, Region, RegionSize},
+        register::Mpuir,
+    };
+
+    // How many regions?
+    let mpuir = Mpuir::read();
     println!("PMSA-v7 MPUIR: {:?}", mpuir);
-    for iregion in 1..mpuir.iregions() {
-        cortex_r::register::Rgnr::write(cortex_r::register::Rgnr(iregion as u32));
-        let bar = cortex_r::register::Irbar::read();
-        let rsr = cortex_r::register::Irsr::read();
-        let racr = cortex_r::register::Iracr::read();
-        println!(
-            "I{:02} 0x{:08x} = {:08x} {:08x}",
-            iregion, bar.0, rsr.0, racr.0
-        );
+
+    // Make an MPU driver
+    let mut mpu = unsafe { Mpu::new() };
+
+    // Look at the existing config
+    for idx in 0..mpu.num_iregions() {
+        if let Some(region) = mpu.get_iregion(idx) {
+            println!("IRegion {}: {:?}", idx, region);
+        }
     }
-    for dregion in 0..mpuir.dregions() {
-        cortex_r::register::Rgnr::write(cortex_r::register::Rgnr(dregion as u32));
-        let bar = cortex_r::register::Drbar::read();
-        let rsr = cortex_r::register::Drsr::read();
-        let racr = cortex_r::register::Dracr::read();
-        println!(
-            "D{:02} 0x{:08x} = {:08x} {:08x}",
-            dregion, bar.0, rsr.0, racr.0
-        );
+    for idx in 0..mpu.num_dregions() {
+        if let Some(region) = mpu.get_dregion(idx) {
+            println!("DRegion {}: {:?}", idx, region);
+        }
+    }
+
+    // Load a config (but don't enable it)
+    mpu.configure(&Config {
+        background_config: true,
+        dregions: &[Region {
+            base: 0x2000_0000 as *mut u8,
+            size: RegionSize::_16M,
+            subregion_mask: 0x00,
+            enabled: true,
+            no_exec: false,
+            mem_attr: MemAttr::Cacheable {
+                inner: CacheablePolicy::WriteThroughNoWriteAllocate,
+                outer: CacheablePolicy::NonCacheable,
+                shareable: true,
+            },
+        }],
+        iregions: &[],
+    })
+    .unwrap();
+
+    // Look at the new config
+    for idx in 0..mpu.num_dregions() {
+        if let Some(region) = mpu.get_dregion(idx) {
+            println!("DRegion {}: {:?}", idx, region);
+        }
     }
 }
 

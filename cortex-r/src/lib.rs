@@ -14,6 +14,9 @@ pub mod asm;
 #[cfg(any(test, arm_architecture = "v8-r"))]
 pub mod pmsav8;
 
+#[cfg(any(test, arm_architecture = "v7-r"))]
+pub mod pmsav7;
+
 /// Generate an SVC call with the given argument.
 ///
 /// Safe to call even in Supervisor (Svc) mode, as long as your Svc handler

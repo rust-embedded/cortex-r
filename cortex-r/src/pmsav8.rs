@@ -1,4 +1,10 @@
 //! Support for the PMSAv8-32 EL1 MPU
+//!
+//! See Part C: Armv8-R Protected Memory System Architecture in [ARM
+//! Architecture Reference Manual Supplement - ARMv8, for the ARMv8-R AArch32
+//! architecture profile][armv8r]
+//!
+//! [armv8r]: https://developer.arm.com/documentation/ddi0568/latest/
 
 use arbitrary_int::{u26, u3};
 
@@ -7,6 +13,7 @@ use crate::register;
 #[doc(inline)]
 pub use register::prbar::{AccessPerms, Shareability};
 
+/// Ways this API can fail
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Error {
     /// Found too many regions
@@ -203,8 +210,8 @@ pub struct Region {
     pub enable: bool,
 }
 
-// Creating a static Config is fine - the pointers within it
-// only go to the MPU and aren't access via Rust code
+// Creating a static Region is fine - the pointers within it
+// only go to the MPU and aren't accessed via Rust code
 unsafe impl Sync for Region {}
 
 /// Describes the memory ordering and cacheability of a region
