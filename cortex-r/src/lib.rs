@@ -11,7 +11,7 @@ pub mod interrupt;
 
 pub mod asm;
 
-#[cfg(arm_architecture = "v8-r")]
+#[cfg(any(test, arm_architecture = "v8-r"))]
 pub mod pmsav8;
 
 /// Generate an SVC call with the given argument.
