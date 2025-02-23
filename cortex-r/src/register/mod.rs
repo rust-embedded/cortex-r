@@ -9,17 +9,6 @@ pub mod amair0;
 pub mod amair1;
 pub mod ccsidr;
 pub mod clidr;
-pub mod cntfrq;
-pub mod cntkctl;
-pub mod cntp_ctl;
-pub mod cntp_cval;
-pub mod cntp_tval;
-pub mod cntpct;
-pub mod cntv_ctl;
-pub mod cntv_cval;
-pub mod cntv_tval;
-pub mod cntvct;
-pub mod cntvoff;
 pub mod contextidr;
 pub mod cpacr;
 pub mod cpsr;
@@ -108,17 +97,6 @@ pub use amair0::Amair0;
 pub use amair1::Amair1;
 pub use ccsidr::Ccsidr;
 pub use clidr::Clidr;
-pub use cntfrq::Cntfrq;
-pub use cntkctl::Cntkctl;
-pub use cntp_ctl::CntpCtl;
-pub use cntp_cval::CntpCval;
-pub use cntp_tval::CntpTval;
-pub use cntpct::CntPct;
-pub use cntv_ctl::CntvCtl;
-pub use cntv_cval::CntvCval;
-pub use cntv_tval::CntvTval;
-pub use cntvct::CntVct;
-pub use cntvoff::CntVoff;
 pub use contextidr::Contextidr;
 pub use cpacr::Cpacr;
 pub use cpsr::Cpsr;
@@ -220,6 +198,12 @@ pub trait SysReg {
 
 /// 32-bit Readable System Registers
 pub trait SysRegRead: SysReg {
+    /// Read a value from this 32-bit register
+    ///
+    /// # Safety
+    ///
+    /// You need to read the Architecture Reference Manual because this read
+    /// may have side-effects.
     #[inline]
     unsafe fn read_raw() -> u32 {
         let r: u32;
@@ -246,6 +230,12 @@ pub trait SysRegRead: SysReg {
 
 /// Writable 32-bit System Registers
 pub trait SysRegWrite: SysReg {
+    /// Write a value to this 32-bit register
+    ///
+    /// # Safety
+    ///
+    /// You need to read the Architecture Reference Manual to verify that you are
+    /// writing valid data here.
     #[inline]
     unsafe fn write_raw(_value: u32) {
         #[cfg(target_arch = "arm")]
@@ -276,6 +266,12 @@ pub trait SysReg64 {
 
 /// 64-bit Readable System Registers
 pub trait SysRegRead64: SysReg64 {
+    /// Read a value from this 64-bit register
+    ///
+    /// # Safety
+    ///
+    /// You need to read the Architecture Reference Manual because this read
+    /// may have side-effects.
     #[inline]
     unsafe fn read_raw() -> u64 {
         let r_lo: u32;
@@ -297,12 +293,18 @@ pub trait SysRegRead64: SysReg64 {
             r_lo = 0;
             r_hi = 0;
         }
-        (r_hi as u64) << 32 | (r_lo as u64)
+        ((r_hi as u64) << 32) | (r_lo as u64)
     }
 }
 
 /// Writable 64-bit System Registers
 pub trait SysRegWrite64: SysReg64 {
+    /// Write a value to this 64-bit register
+    ///
+    /// # Safety
+    ///
+    /// You need to read the Architecture Reference Manual to verify that you are
+    /// writing valid data here.
     #[inline]
     unsafe fn write_raw(_value: u64) {
         #[cfg(target_arch = "arm")]

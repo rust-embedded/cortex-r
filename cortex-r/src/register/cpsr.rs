@@ -103,6 +103,10 @@ impl Cpsr {
     }
 
     /// Modify SCTLR (*System Control Register*)
+    ///
+    /// # Safety
+    ///
+    /// See docs for [Self::write].
     #[inline]
     pub unsafe fn modify<F>(f: F)
     where

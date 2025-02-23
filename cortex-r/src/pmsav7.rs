@@ -347,7 +347,7 @@ impl MemAttrBits {
             (0b010, false, false) => Some(MemAttr::Device { shareable: false }),
             (tex, c, b) if tex >= 0b100 => {
                 let outer = tex & 0b11;
-                let inner = (c as u8) << 1 | (b as u8);
+                let inner = ((c as u8) << 1) | (b as u8);
                 Some(MemAttr::Cacheable {
                     outer: CacheablePolicy::new_with_raw_value(u2::from_u8(outer)),
                     inner: CacheablePolicy::new_with_raw_value(u2::from_u8(inner)),
@@ -356,7 +356,7 @@ impl MemAttrBits {
             }
             _ => {
                 // failed to decode
-                return None;
+                None
             }
         }
     }
