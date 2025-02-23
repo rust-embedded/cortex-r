@@ -4,7 +4,6 @@
 #![no_main]
 
 // pull in our start-up code
-use cortex_r::generic_timer::{El1PhysicalTimer, El1VirtualTimer, GenericTimer};
 use cortex_r_examples as _;
 
 use semihosting::println;
@@ -14,16 +13,20 @@ use semihosting::println;
 /// It is called by the start-up code in `cortex-m-rt`.
 #[no_mangle]
 pub extern "C" fn kmain() {
-    if let Err(e) = main() {
-        panic!("main returned {:?}", e);
-    }
+    main();
     semihosting::process::exit(0);
 }
 
-/// The main function of our Rust application.
-///
-/// Called by [`kmain`].
-fn main() -> Result<(), core::fmt::Error> {
+/// A placeholder function so that the workspace still builds
+#[cfg(not(arm_architecture = "v8-r"))]
+fn main() {
+    println!("No generic timers on this platform");
+}
+
+/// Let's test some timers!
+#[cfg(arm_architecture = "v8-r")]
+fn main() {
+    use cortex_r::generic_timer::{El1PhysicalTimer, El1VirtualTimer, GenericTimer};
     let cntfrq = cortex_r::register::Cntfrq::read().0;
     println!("cntfrq = {:.03} MHz", cntfrq as f32 / 1_000_000.0);
 
@@ -68,6 +71,4 @@ fn main() -> Result<(), core::fmt::Error> {
             timer.countdown() as i32
         );
     }
-
-    Ok(())
 }

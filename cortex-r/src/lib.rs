@@ -5,20 +5,18 @@
 #[cfg(feature = "critical-section-single-core")]
 mod critical_section;
 
-pub mod register;
-
-pub mod interrupt;
-
 pub mod asm;
-
-#[cfg(any(test, arm_architecture = "v8-r"))]
-pub mod pmsav8;
+pub mod interrupt;
+pub mod register;
 
 #[cfg(any(test, arm_architecture = "v7-r"))]
 pub mod pmsav7;
 
-#[cfg(arm_architecture = "v8-r")]
+#[cfg(any(test, arm_architecture = "v8-r"))]
 pub mod generic_timer;
+
+#[cfg(any(test, arm_architecture = "v8-r"))]
+pub mod pmsav8;
 
 /// Generate an SVC call with the given argument.
 ///

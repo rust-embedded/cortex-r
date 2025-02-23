@@ -175,9 +175,9 @@ pub use vmpidr::Vmpidr;
 pub use vpidr::Vpidr;
 pub use vsctlr::Vsctlr;
 
-//#[cfg(arm_architecture = "v8-r")]
+#[cfg(arm_architecture = "v8-r")]
 pub mod armv8r;
-//#[cfg(arm_architecture = "v8-r")]
+#[cfg(arm_architecture = "v8-r")]
 pub use armv8r::*;
 
 pub use imp::*;

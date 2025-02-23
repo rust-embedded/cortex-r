@@ -71,6 +71,8 @@ jobs:
       - name: Build
         run: |
           cargo build --target ${{ matrix.target }} -Zbuild-std=core
+          cargo build --target ${{ matrix.target }} -Zbuild-std=core --no-default-features
+          cargo build --target ${{ matrix.target }} -Zbuild-std=core --all-features
 
   # Gather all the above build jobs together for the purposes of getting an overall pass-fail
   build-all:
