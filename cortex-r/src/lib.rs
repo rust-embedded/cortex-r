@@ -17,6 +17,9 @@ pub mod pmsav8;
 #[cfg(any(test, arm_architecture = "v7-r"))]
 pub mod pmsav7;
 
+#[cfg(arm_architecture = "v8-r")]
+pub mod generic_timer;
+
 /// Generate an SVC call with the given argument.
 ///
 /// Safe to call even in Supervisor (Svc) mode, as long as your Svc handler

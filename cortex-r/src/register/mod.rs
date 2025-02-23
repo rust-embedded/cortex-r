@@ -10,12 +10,16 @@ pub mod amair1;
 pub mod ccsidr;
 pub mod clidr;
 pub mod cntfrq;
-pub mod cnthp_tval;
 pub mod cntkctl;
 pub mod cntp_ctl;
+pub mod cntp_cval;
 pub mod cntp_tval;
+pub mod cntpct;
 pub mod cntv_ctl;
+pub mod cntv_cval;
 pub mod cntv_tval;
+pub mod cntvct;
+pub mod cntvoff;
 pub mod contextidr;
 pub mod cpacr;
 pub mod cpsr;
@@ -105,12 +109,16 @@ pub use amair1::Amair1;
 pub use ccsidr::Ccsidr;
 pub use clidr::Clidr;
 pub use cntfrq::Cntfrq;
-pub use cnthp_tval::CnthpTval;
 pub use cntkctl::Cntkctl;
 pub use cntp_ctl::CntpCtl;
+pub use cntp_cval::CntpCval;
 pub use cntp_tval::CntpTval;
+pub use cntpct::CntPct;
 pub use cntv_ctl::CntvCtl;
+pub use cntv_cval::CntvCval;
 pub use cntv_tval::CntvTval;
+pub use cntvct::CntVct;
+pub use cntvoff::CntVoff;
 pub use contextidr::Contextidr;
 pub use cpacr::Cpacr;
 pub use cpsr::Cpsr;
@@ -196,7 +204,7 @@ pub use armv8r::*;
 
 pub use imp::*;
 
-/// Describes a System Register
+/// Describes a 32-bit System Register
 pub trait SysReg {
     /// Which Co-Processor (e.g. 15 for CP15) is this register in?
     const CP: u32;
@@ -210,7 +218,7 @@ pub trait SysReg {
     const OP2: u32;
 }
 
-/// Readable System Registers
+/// 32-bit Readable System Registers
 pub trait SysRegRead: SysReg {
     #[inline]
     unsafe fn read_raw() -> u32 {
@@ -236,7 +244,7 @@ pub trait SysRegRead: SysReg {
     }
 }
 
-/// Writable System Registers
+/// Writable 32-bit System Registers
 pub trait SysRegWrite: SysReg {
     #[inline]
     unsafe fn write_raw(_value: u32) {
@@ -250,6 +258,64 @@ pub trait SysRegWrite: SysReg {
                 crn = const Self::CRN,
                 crm = const Self::CRM,
                 op2 = const Self::OP2,
+                options(nomem, nostack, preserves_flags)
+            );
+        }
+    }
+}
+
+/// Describes a 64-bit System Register
+pub trait SysReg64 {
+    /// Which Co-Processor (e.g. 15 for CP15) is this register in?
+    const CP: u32;
+    /// Which OP1 argument accesses this register
+    const OP1: u32;
+    /// Which CRm argument (e.g. 1 for c1) accesses this register
+    const CRM: u32;
+}
+
+/// 64-bit Readable System Registers
+pub trait SysRegRead64: SysReg64 {
+    #[inline]
+    unsafe fn read_raw() -> u64 {
+        let r_lo: u32;
+        let r_hi: u32;
+        #[cfg(target_arch = "arm")]
+        unsafe {
+            core::arch::asm!(
+                "mrrc p{cp}, {op1}, {rt}, {rt2}, c{crm}",
+                cp = const Self::CP,
+                op1 = const Self::OP1,
+                rt = out(reg) r_lo,
+                rt2 = out(reg) r_hi,
+                crm = const Self::CRM,
+                options(nomem, nostack, preserves_flags)
+            );
+        }
+        #[cfg(not(target_arch = "arm"))]
+        {
+            r_lo = 0;
+            r_hi = 0;
+        }
+        (r_hi as u64) << 32 | (r_lo as u64)
+    }
+}
+
+/// Writable 64-bit System Registers
+pub trait SysRegWrite64: SysReg64 {
+    #[inline]
+    unsafe fn write_raw(_value: u64) {
+        #[cfg(target_arch = "arm")]
+        unsafe {
+            let r_lo = _value as u32;
+            let r_hi = (_value >> 32) as u32;
+            core::arch::asm!(
+                "mcrr p{cp}, {op1}, {rt}, {rt2}, c{crm}",
+                cp = const Self::CP,
+                op1 = const Self::OP1,
+                rt = in(reg) r_lo,
+                rt2 = in(reg) r_hi,
+                crm = const Self::CRM,
                 options(nomem, nostack, preserves_flags)
             );
         }

@@ -1,10 +1,10 @@
-//! Code for managing CNTHP_CTL (*Hyp Physical Counter-timer Control Register (EL2)*)
+//! Code for managing CNTV_CTL (*Virtual Counter-timer Control Register*)
 
 use crate::register::{SysReg, SysRegRead, SysRegWrite};
 
-/// CNTHP_CTL (*Hyp Physical Counter-timer Control Register (EL2)*)
+/// CNTV_CTL (*Virtual Counter-timer Control Register*)
 #[bitbybit::bitfield(u32)]
-pub struct CnthpCtl {
+pub struct CntvCtl {
     /// The status of the timer interrupt.
     #[bits(2..=2, r)]
     istatus: bool,
@@ -19,37 +19,47 @@ pub struct CnthpCtl {
     enable: bool,
 }
 
-impl SysReg for CnthpCtl {
+impl core::fmt::Debug for CntvCtl {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        f.debug_struct("CntvCtl")
+            .field("istatus", &self.istatus())
+            .field("imask", &self.imask())
+            .field("enable", &self.enable())
+            .finish()
+    }
+}
+
+impl SysReg for CntvCtl {
     const CP: u32 = 15;
     const CRN: u32 = 14;
-    const OP1: u32 = 4;
-    const CRM: u32 = 2;
+    const OP1: u32 = 0;
+    const CRM: u32 = 3;
     const OP2: u32 = 1;
 }
 
-impl SysRegRead for CnthpCtl {}
+impl SysRegRead for CntvCtl {}
 
-impl CnthpCtl {
+impl CntvCtl {
     #[inline]
-    /// Reads CNTHP_CTL (*Hyp Physical Counter-timer Control Register (EL2)*)
-    pub fn read() -> CnthpCtl {
+    /// Reads CNTV_CTL (*Virtual Counter-timer Control Register*)
+    pub fn read() -> CntvCtl {
         unsafe { Self::new_with_raw_value(<Self as SysRegRead>::read_raw()) }
     }
 }
 
-impl SysRegWrite for CnthpCtl {}
+impl SysRegWrite for CntvCtl {}
 
-impl CnthpCtl {
+impl CntvCtl {
     #[inline]
-    /// Writes CNTHP_CTL (*Hyp Physical Counter-timer Control Register (EL2)*)
+    /// Writes CNTV_CTL (*Virtual Counter-timer Control Register*)
     pub fn write(value: Self) {
         unsafe {
             <Self as SysRegWrite>::write_raw(value.raw_value());
         }
     }
 
-    /// Modify CNTHP_CTL (*Hyp Physical Counter-timer Control Register (EL2)*)
     #[inline]
+    /// Modifies CNTV_CTL (*Virtual Counter-timer Control Register*)
     pub fn modify<F>(f: F)
     where
         F: FnOnce(&mut Self),

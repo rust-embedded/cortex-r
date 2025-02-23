@@ -1,8 +1,8 @@
-//! Code for managing CNTV_TVAL (*Counter-timer Virtual Timer TimerValue Register*)
+//! Code for managing CNTV_TVAL (*Virtual Counter-timer TimerValue Register*)
 
 use crate::register::{SysReg, SysRegRead, SysRegWrite};
 
-/// CNTV_TVAL (*Counter-timer Virtual Timer TimerValue Register*)
+/// CNTV_TVAL (*Virtual Counter-timer TimerValue Register*)
 pub struct CntvTval(pub u32);
 impl SysReg for CntvTval {
     const CP: u32 = 15;
@@ -14,7 +14,7 @@ impl SysReg for CntvTval {
 impl crate::register::SysRegRead for CntvTval {}
 impl CntvTval {
     #[inline]
-    /// Reads CNTV_TVAL (*Counter-timer Virtual Timer TimerValue Register*)
+    /// Reads CNTV_TVAL (*Virtual Counter-timer TimerValue Register*)
     pub fn read() -> CntvTval {
         unsafe { Self(<Self as SysRegRead>::read_raw()) }
     }
@@ -22,12 +22,8 @@ impl CntvTval {
 impl crate::register::SysRegWrite for CntvTval {}
 impl CntvTval {
     #[inline]
-    /// Writes CNTV_TVAL (*Counter-timer Virtual Timer TimerValue Register*)
-    ///
-    /// # Safety
-    ///
-    /// Ensure that this value is appropriate for this register
-    pub unsafe fn write(value: Self) {
+    /// Writes CNTV_TVAL (*Virtual Counter-timer TimerValue Register*)
+    pub fn write(value: Self) {
         unsafe {
             <Self as SysRegWrite>::write_raw(value.0);
         }

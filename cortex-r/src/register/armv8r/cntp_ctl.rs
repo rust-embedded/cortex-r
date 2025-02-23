@@ -1,10 +1,10 @@
-//! Code for managing CNTHP_CTL (*Hyp Physical Counter-timer Control Register (EL2)*)
+//! Code for managing CNTP_CTL (*Physical Counter-timer Control Register*)
 
 use crate::register::{SysReg, SysRegRead, SysRegWrite};
 
-/// CNTHP_CTL (*Hyp Physical Counter-timer Control Register (EL2)*)
+/// CNTP_CTL (*Physical Counter-timer Control Register*)
 #[bitbybit::bitfield(u32)]
-pub struct CnthpCtl {
+pub struct CntpCtl {
     /// The status of the timer interrupt.
     #[bits(2..=2, r)]
     istatus: bool,
@@ -19,37 +19,46 @@ pub struct CnthpCtl {
     enable: bool,
 }
 
-impl SysReg for CnthpCtl {
+impl core::fmt::Debug for CntpCtl {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        f.debug_struct("CntpCtl")
+            .field("istatus", &self.istatus())
+            .field("imask", &self.imask())
+            .field("enable", &self.enable())
+            .finish()
+    }
+}
+
+impl SysReg for CntpCtl {
     const CP: u32 = 15;
     const CRN: u32 = 14;
-    const OP1: u32 = 4;
+    const OP1: u32 = 0;
     const CRM: u32 = 2;
     const OP2: u32 = 1;
 }
+impl SysRegRead for CntpCtl {}
 
-impl SysRegRead for CnthpCtl {}
-
-impl CnthpCtl {
+impl CntpCtl {
     #[inline]
-    /// Reads CNTHP_CTL (*Hyp Physical Counter-timer Control Register (EL2)*)
-    pub fn read() -> CnthpCtl {
+    /// Reads CNTP_CTL (*Physical Counter-timer Control Register*)
+    pub fn read() -> CntpCtl {
         unsafe { Self::new_with_raw_value(<Self as SysRegRead>::read_raw()) }
     }
 }
 
-impl SysRegWrite for CnthpCtl {}
+impl SysRegWrite for CntpCtl {}
 
-impl CnthpCtl {
+impl CntpCtl {
     #[inline]
-    /// Writes CNTHP_CTL (*Hyp Physical Counter-timer Control Register (EL2)*)
+    /// Writes CNTP_CTL (*Physical Counter-timer Control Register*)
     pub fn write(value: Self) {
         unsafe {
             <Self as SysRegWrite>::write_raw(value.raw_value());
         }
     }
 
-    /// Modify CNTHP_CTL (*Hyp Physical Counter-timer Control Register (EL2)*)
     #[inline]
+    /// Modifies CNTP_CTL (*Physical Counter-timer Control Register*)
     pub fn modify<F>(f: F)
     where
         F: FnOnce(&mut Self),

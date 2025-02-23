@@ -11,7 +11,9 @@ impl SysReg for Cntfrq {
     const CRM: u32 = 0;
     const OP2: u32 = 0;
 }
-impl crate::register::SysRegRead for Cntfrq {}
+
+impl SysRegRead for Cntfrq {}
+
 impl Cntfrq {
     #[inline]
     /// Reads CNTFRQ (*Counter-timer Frequency Register*)
@@ -19,15 +21,13 @@ impl Cntfrq {
         unsafe { Self(<Self as SysRegRead>::read_raw()) }
     }
 }
-impl crate::register::SysRegWrite for Cntfrq {}
+
+impl SysRegWrite for Cntfrq {}
+
 impl Cntfrq {
     #[inline]
     /// Writes CNTFRQ (*Counter-timer Frequency Register*)
-    ///
-    /// # Safety
-    ///
-    /// Ensure that this value is appropriate for this register
-    pub unsafe fn write(value: Self) {
+    pub fn write(value: Self) {
         unsafe {
             <Self as SysRegWrite>::write_raw(value.0);
         }
