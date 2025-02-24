@@ -4,7 +4,7 @@
 #![no_main]
 
 // pull in our start-up code
-use cortex_r as _;
+use cortex_ar as _;
 use cortex_r_examples as _;
 
 use semihosting::println;
@@ -24,20 +24,20 @@ pub extern "C" fn kmain() {
 }
 
 fn chip_info() {
-    println!("{:?}", cortex_r::register::Midr::read());
-    println!("{:?}", cortex_r::register::Cpsr::read());
+    println!("{:?}", cortex_ar::register::Midr::read());
+    println!("{:?}", cortex_ar::register::Cpsr::read());
     #[cfg(arm_architecture = "v8-r")]
     {
-        println!("{:?}", cortex_r::register::ImpCbar::read());
-        println!("{:?}", cortex_r::register::Vbar::read());
+        println!("{:?}", cortex_ar::register::ImpCbar::read());
+        println!("{:?}", cortex_ar::register::Vbar::read());
         // This only works in EL2 and start-up put us in EL1
-        // println!("{:?}", cortex_r::register::Hvbar::read());
+        // println!("{:?}", cortex_ar::register::Hvbar::read());
     }
 }
 
 #[cfg(arm_architecture = "v7-r")]
 fn mpu_pmsa_v7() {
-    use cortex_r::{
+    use cortex_ar::{
         pmsav7::{CacheablePolicy, Config, MemAttr, Mpu, Region, RegionSize},
         register::Mpuir,
     };
@@ -90,7 +90,7 @@ fn mpu_pmsa_v7() {
 
 #[cfg(arm_architecture = "v8-r")]
 fn mpu_pmsa_v8() {
-    use cortex_r::{
+    use cortex_ar::{
         pmsav8::{
             AccessPerms, Cacheable, Config, El1Mpu, MemAttr, Region, RwAllocPolicy, Shareability,
         },
@@ -140,12 +140,12 @@ fn mpu_pmsa_v8() {
 fn test_changing_sctlr() {
     println!(
         "{:?} before setting C, I and Z",
-        cortex_r::register::Sctlr::read()
+        cortex_ar::register::Sctlr::read()
     );
-    cortex_r::register::Sctlr::modify(|w| {
+    cortex_ar::register::Sctlr::modify(|w| {
         w.set_c(true);
         w.set_i(true);
         w.set_z(true);
     });
-    println!("{:?} after", cortex_r::register::Sctlr::read());
+    println!("{:?} after", cortex_ar::register::Sctlr::read());
 }

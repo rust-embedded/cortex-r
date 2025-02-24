@@ -3,7 +3,7 @@ exclude = [
   "arm-targets",
 ]
 members = [
-  "cortex-r",
+  "cortex-ar",
   "cortex-r-examples",
   "cortex-r-rt",
 ]

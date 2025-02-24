@@ -26,8 +26,8 @@ fn main() {
 /// Let's test some timers!
 #[cfg(arm_architecture = "v8-r")]
 fn main() {
-    use cortex_r::generic_timer::{El1PhysicalTimer, El1VirtualTimer, GenericTimer};
-    let cntfrq = cortex_r::register::Cntfrq::read().0;
+    use cortex_ar::generic_timer::{El1PhysicalTimer, El1VirtualTimer, GenericTimer};
+    let cntfrq = cortex_ar::register::Cntfrq::read().0;
     println!("cntfrq = {:.03} MHz", cntfrq as f32 / 1_000_000.0);
 
     let delay_ticks = cntfrq * 2;

@@ -231,7 +231,7 @@ jobs:
           rustup default stable
       - name: Run cargo test
         run: |
-          cargo test --manifest-path cortex-r/Cargo.toml
+          cargo test --manifest-path cortex-ar/Cargo.toml
 
   # Run some programs in QEMU
   qemu-test:
