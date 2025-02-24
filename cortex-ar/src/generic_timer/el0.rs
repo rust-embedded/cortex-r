@@ -6,7 +6,7 @@ use crate::register;
 ///
 /// Note that for most of these APIs to work, EL0 needs to have been granted
 /// access using methods like
-/// [El2GenericTimer::el0_access_physical_counter](crate::generic_timer::El2GenericTimer::el0_access_physical_counter).
+/// [El1PhysicalTimer::el0_access_physical_counter](crate::generic_timer::El1PhysicalTimer::el0_access_physical_counter).
 pub struct El0PhysicalTimer();
 
 impl El0PhysicalTimer {
