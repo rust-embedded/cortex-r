@@ -28,6 +28,8 @@ jobs:
       - name: Build
         run: |
           cargo build --target ${{ matrix.target }}
+          cargo build --target ${{ matrix.target }} --no-default-features
+          cargo build --target ${{ matrix.target }} --all-features
 
   # Build the host tools
   build-host:
@@ -69,6 +71,8 @@ jobs:
       - name: Build
         run: |
           cargo build --target ${{ matrix.target }} -Zbuild-std=core
+          cargo build --target ${{ matrix.target }} -Zbuild-std=core --no-default-features
+          cargo build --target ${{ matrix.target }} -Zbuild-std=core --all-features
 
   # Gather all the above build jobs together for the purposes of getting an overall pass-fail
   build-all:
@@ -99,6 +103,8 @@ jobs:
       - name: Build docs
         run: |
           cargo doc --target ${{ matrix.target }}
+          cargo doc --target ${{ matrix.target }} --no-default-features
+          cargo doc --target ${{ matrix.target }} --all-features
 
   # Build the docs for the host tools
   docs-host:
@@ -184,6 +190,8 @@ jobs:
       - name: Clippy
         run: |
           cargo clippy --target ${{ matrix.target }}
+          cargo clippy --target ${{ matrix.target }} --no-default-features
+          cargo clippy --target ${{ matrix.target }} --all-features
 
   # Run clippy on the host tools
   clippy-host:
@@ -211,8 +219,22 @@ jobs:
     steps:
       - run: /bin/true
 
+  # Run the unit tests
+  unit-test:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install rust
+        run: |
+          rustup install stable
+          rustup default stable
+      - name: Run cargo test
+        run: |
+          cargo test --manifest-path cortex-r/Cargo.toml
+
   # Run some programs in QEMU
-  test:
+  qemu-test:
     runs-on: ubuntu-24.04
     needs: [build-all]
     steps:
@@ -224,6 +246,6 @@ jobs:
   # Gather all the above xxx-all jobs together for the purposes of getting an overall pass-fail
   all:
     runs-on: ubuntu-24.04
-    needs: [docs-all, build-all, fmt-all, test] # not gating on clippy-all
+    needs: [docs-all, build-all, fmt-all, unit-test, qemu-test] # not gating on clippy-all
     steps:
       - run: /bin/true

@@ -1,6 +1,8 @@
-//! Code for the *Hyp Vector Base Address Register*
+//! Code for HVBAR (*Hyp Vector Base Address Register*)
 
-/// The *Hyp Vector Base Address Register* (Hvbar)
+use crate::register::{SysReg, SysRegRead, SysRegWrite};
+
+/// HVBAR (*Hyp Vector Base Address Register*)
 ///
 /// There is no `modify` method because this register holds a single 32-bit address.
 ///
@@ -9,37 +11,38 @@
 #[repr(transparent)]
 pub struct Hvbar(*mut u32);
 
+impl SysReg for Hvbar {
+    const CP: u32 = 15;
+    const CRN: u32 = 12;
+    const OP1: u32 = 4;
+    const CRM: u32 = 0;
+    const OP2: u32 = 0;
+}
+
+impl SysRegRead for Hvbar {}
+
+impl SysRegWrite for Hvbar {}
+
 impl Hvbar {
-    /// Reads the *Hyp Vector Base Address Register*
-    ///
-    /// Will cause an exception unless you are in EL2.
+    /// Read HVBAR (*Hyp Vector Base Address Register*)
     #[inline]
     pub fn read() -> Hvbar {
-        let r: usize;
-        #[cfg(target_arch = "arm")]
-        unsafe {
-            core::arch::asm!("mrc p15, 4, {}, c12, c0, 0", out(reg) r, options(nomem, nostack, preserves_flags));
-        }
-        #[cfg(not(target_arch = "arm"))]
-        {
-            r = 0;
-        }
-        Self(r as *mut u32)
+        // Safety: Reading this register has no side-effects and is atomic
+        unsafe { Self(<Self as SysRegRead>::read_raw() as *mut u32) }
     }
 
-    /// Write to the *Hyp Vector Base Address Register*
+    /// Write HVBAR (*Hyp Vector Base Address Register*)
     ///
     /// # Safety
     ///
     /// You must supply a correctly-aligned address of a valid Arm Cortex-R
     /// Vector Table.
     #[inline]
-    pub fn write(_value: Self) {
+    pub unsafe fn write(value: Self) {
         // Safety: Writing this register is atomic
-        #[cfg(target_arch = "arm")]
         unsafe {
-            core::arch::asm!("mcr p15, 0, {}, c12, c0, 0", in(reg) _value.0, options(nomem, nostack, preserves_flags));
-        };
+            <Self as SysRegWrite>::write_raw(value.0 as u32);
+        }
     }
 }
 

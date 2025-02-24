@@ -9,27 +9,135 @@ use cortex_r_examples as _;
 
 use semihosting::println;
 
-extern "C" {
-    static _stack_top: u32;
-}
-
 /// The entry-point to the Rust application.
 ///
 /// It is called by the start-up code in `cortex-m-rt`.
 #[no_mangle]
 pub extern "C" fn kmain() {
+    chip_info();
+    #[cfg(arm_architecture = "v7-r")]
+    mpu_pmsa_v7();
+    #[cfg(arm_architecture = "v8-r")]
+    mpu_pmsa_v8();
+    test_changing_sctlr();
+    semihosting::process::exit(0);
+}
+
+fn chip_info() {
     println!("{:?}", cortex_r::register::Midr::read());
     println!("{:?}", cortex_r::register::Cpsr::read());
     #[cfg(arm_architecture = "v8-r")]
     {
-        println!("{:?}", cortex_r::register::Cbar::read());
+        println!("{:?}", cortex_r::register::ImpCbar::read());
         println!("{:?}", cortex_r::register::Vbar::read());
         // This only works in EL2 and start-up put us in EL1
         // println!("{:?}", cortex_r::register::Hvbar::read());
     }
+}
 
-    println!("_stack_top: {:010p}", core::ptr::addr_of!(_stack_top));
+#[cfg(arm_architecture = "v7-r")]
+fn mpu_pmsa_v7() {
+    use cortex_r::{
+        pmsav7::{CacheablePolicy, Config, MemAttr, Mpu, Region, RegionSize},
+        register::Mpuir,
+    };
 
+    // How many regions?
+    let mpuir = Mpuir::read();
+    println!("PMSA-v7 MPUIR: {:?}", mpuir);
+
+    // Make an MPU driver
+    let mut mpu = unsafe { Mpu::new() };
+
+    // Look at the existing config
+    for idx in 0..mpu.num_iregions() {
+        if let Some(region) = mpu.get_iregion(idx) {
+            println!("IRegion {}: {:?}", idx, region);
+        }
+    }
+    for idx in 0..mpu.num_dregions() {
+        if let Some(region) = mpu.get_dregion(idx) {
+            println!("DRegion {}: {:?}", idx, region);
+        }
+    }
+
+    // Load a config (but don't enable it)
+    mpu.configure(&Config {
+        background_config: true,
+        dregions: &[Region {
+            base: 0x2000_0000 as *mut u8,
+            size: RegionSize::_16M,
+            subregion_mask: 0x00,
+            enabled: true,
+            no_exec: false,
+            mem_attr: MemAttr::Cacheable {
+                inner: CacheablePolicy::WriteThroughNoWriteAllocate,
+                outer: CacheablePolicy::NonCacheable,
+                shareable: true,
+            },
+        }],
+        iregions: &[],
+    })
+    .unwrap();
+
+    // Look at the new config
+    for idx in 0..mpu.num_dregions() {
+        if let Some(region) = mpu.get_dregion(idx) {
+            println!("DRegion {}: {:?}", idx, region);
+        }
+    }
+}
+
+#[cfg(arm_architecture = "v8-r")]
+fn mpu_pmsa_v8() {
+    use cortex_r::{
+        pmsav8::{
+            AccessPerms, Cacheable, Config, El1Mpu, MemAttr, Region, RwAllocPolicy, Shareability,
+        },
+        register::Mpuir,
+    };
+
+    // How many regions?
+    let mpuir = Mpuir::read();
+    println!("PMSA-v8 MPUIR: {:?}", mpuir);
+
+    // Make an MPU driver
+    let mut mpu = unsafe { El1Mpu::new() };
+
+    // Look at the existing config
+    for idx in 0..mpu.num_regions() {
+        if let Some(region) = mpu.get_region(idx) {
+            println!("Region {}: {:?}", idx, region);
+        }
+    }
+
+    // Load a config (but don't enable it)
+    mpu.configure(&Config {
+        background_config: true,
+        regions: &[Region {
+            range: 0x0000_0000 as *mut u8..=0x3FFF_FFFF as *mut u8,
+            shareability: Shareability::OuterShareable,
+            access: AccessPerms::ReadWrite,
+            no_exec: true,
+            mair: 0,
+            enable: true,
+        }],
+        memory_attributes: &[MemAttr::NormalMemory {
+            outer: Cacheable::WriteThroughNonTransient(RwAllocPolicy::RW),
+            inner: Cacheable::WriteThroughNonTransient(RwAllocPolicy::RW),
+        }],
+    })
+    .unwrap();
+
+    // Look at the new config
+    for idx in 0..mpu.num_regions() {
+        if let Some(region) = mpu.get_region(idx) {
+            println!("Region {}: {:?}", idx, region);
+        }
+    }
+}
+
+fn test_changing_sctlr() {
     println!(
         "{:?} before setting C, I and Z",
         cortex_r::register::Sctlr::read()
@@ -40,6 +148,4 @@ pub extern "C" fn kmain() {
         w.set_z(true);
     });
     println!("{:?} after", cortex_r::register::Sctlr::read());
-
-    semihosting::process::exit(0);
 }

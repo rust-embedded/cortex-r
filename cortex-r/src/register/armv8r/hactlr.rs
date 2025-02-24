@@ -1,6 +1,8 @@
-//! Code for managing the *Hyp Auxiliary Control Register*
+//! Code for managing HACTRL (*Hyp Auxiliary Control Register*)
 
-/// The *Hyp Auxiliary Control Register* (HACTRL)
+use crate::register::{SysReg, SysRegRead, SysRegWrite};
+
+/// HACTRL (*Hyp Auxiliary Control Register*)
 #[bitbybit::bitfield(u32)]
 pub struct Hactlr {
     /// Controls access to IMP_TESTR1 at EL0 and EL1
@@ -33,34 +35,36 @@ pub struct Hactlr {
     cpuactlr: bool,
 }
 
+impl SysReg for Hactlr {
+    const CP: u32 = 15;
+    const CRN: u32 = 1;
+    const OP1: u32 = 4;
+    const CRM: u32 = 0;
+    const OP2: u32 = 1;
+}
+
+impl SysRegRead for Hactlr {}
+
+impl SysRegWrite for Hactlr {}
+
 impl Hactlr {
-    /// Reads the *Hyp Auxiliary Control Register*
+    /// Read HACTRL (*Hyp Auxiliary Control Register*)
     #[inline]
     pub fn read() -> Hactlr {
-        let r: u32;
         // Safety: Reading this register has no side-effects and is atomic
-        #[cfg(target_arch = "arm")]
-        unsafe {
-            core::arch::asm!("mrc p15, 4, {}, c1, c0, 1", out(reg) r, options(nomem, nostack, preserves_flags));
-        }
-        #[cfg(not(target_arch = "arm"))]
-        {
-            r = 0;
-        }
-        Self::new_with_raw_value(r)
+        unsafe { Self::new_with_raw_value(<Self as SysRegRead>::read_raw()) }
     }
 
-    /// Write to the *Hyp Auxiliary Control Register*
+    /// Write HACTRL (*Hyp Auxiliary Control Register*)
     #[inline]
-    pub fn write(_value: Self) {
+    pub fn write(value: Self) {
         // Safety: Writing this register is atomic
-        #[cfg(target_arch = "arm")]
         unsafe {
-            core::arch::asm!("mcr p15, 4, {}, c1, c0, 1", in(reg) _value.raw_value(), options(nomem, nostack, preserves_flags));
-        };
+            <Self as SysRegWrite>::write_raw(value.raw_value());
+        }
     }
 
-    /// Modify the *Hyp Auxiliary Control Register*
+    /// Modify HACTRL (*Hyp Auxiliary Control Register*)
     #[inline]
     pub fn modify<F>(f: F)
     where
@@ -91,6 +95,6 @@ impl core::fmt::Debug for Hactlr {
 #[cfg(feature = "defmt")]
 impl defmt::Format for Hactlr {
     fn format(&self, f: defmt::Formatter) {
-        defmt::write!(f, "HACTLR {{ CPUACTLR={0=0..1}, CDBGDCI={0=1..2}, FLASHIFREGIONR={0=7..8}, PERIPHPREGIONR={0=8..9}, QOSR={0=9..10}, BUSTIMEOUTR={0=10..11}, INTMONR={0=12..13}, ERR={0=13..14}, TESTR1={0=15..16} }}", self.0)
+        defmt::write!(f, "HACTLR {{ CPUACTLR={0=0..1}, CDBGDCI={0=1..2}, FLASHIFREGIONR={0=7..8}, PERIPHPREGIONR={0=8..9}, QOSR={0=9..10}, BUSTIMEOUTR={0=10..11}, INTMONR={0=12..13}, ERR={0=13..14}, TESTR1={0=15..16} }}", self.raw_value())
     }
 }
