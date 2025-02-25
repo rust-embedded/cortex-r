@@ -85,10 +85,10 @@
 
 #![no_std]
 
-use cortex_r::register::{cpsr::ProcessorMode, Cpsr};
+use cortex_ar::register::{cpsr::ProcessorMode, Cpsr};
 
 #[cfg(arm_architecture = "v8-r")]
-use cortex_r::register::Hactlr;
+use cortex_ar::register::Hactlr;
 
 /// Our default exception handler.
 ///
@@ -424,7 +424,7 @@ core::arch::global_asm!(
             .raw_value()
     },
     te_bit = const {
-        cortex_r::register::Sctlr::new_with_raw_value(0)
+        cortex_ar::register::Sctlr::new_with_raw_value(0)
             .with_te(true)
             .raw_value()
     }

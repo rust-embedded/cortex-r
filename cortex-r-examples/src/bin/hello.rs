@@ -4,7 +4,7 @@
 #![no_main]
 
 // pull in our start-up code
-use cortex_r as _;
+use cortex_ar as _;
 use cortex_r_examples as _;
 
 use semihosting::println;

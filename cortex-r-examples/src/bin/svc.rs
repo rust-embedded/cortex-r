@@ -4,7 +4,7 @@
 #![no_main]
 
 // pull in our start-up code
-use cortex_r as _;
+use cortex_ar as _;
 use cortex_r_examples as _;
 
 use semihosting::println;
@@ -27,7 +27,7 @@ fn main() -> Result<(), core::fmt::Error> {
     let y = x + 1;
     let z = (y as f64) * 1.5;
     println!("x = {}, y = {}, z = {:0.3}", x, y, z);
-    cortex_r::svc!(0xABCDEF);
+    cortex_ar::svc!(0xABCDEF);
     println!("x = {}, y = {}, z = {:0.3}", x, y, z);
     panic!("I am an example panic");
 }
@@ -38,6 +38,6 @@ unsafe extern "C" fn _svc_handler(arg: u32) {
     println!("In _svc_handler, with arg={:#06x}", arg);
     if arg == 0xABCDEF {
         // test nested SVC calls
-        cortex_r::svc!(0x456789);
+        cortex_ar::svc!(0x456789);
     }
 }

@@ -4,7 +4,7 @@
 #![no_main]
 
 // pull in our start-up code
-use cortex_r as _;
+use cortex_ar as _;
 use cortex_r_examples as _;
 
 use arm_gic::{
@@ -33,7 +33,7 @@ const GICD_BASE_OFFSET: usize = 0x0000_0000usize;
 const GICR_BASE_OFFSET: usize = 0x0010_0000usize;
 
 fn dump_cpsr() {
-    let cpsr = cortex_r::register::Cpsr::read();
+    let cpsr = cortex_ar::register::Cpsr::read();
     println!("CPSR: {:?}", cpsr);
 }
 
@@ -42,7 +42,7 @@ fn dump_cpsr() {
 /// Called by [`kmain`].
 fn main() -> Result<(), core::fmt::Error> {
     // Get the GIC address by reading CBAR
-    let periphbase = cortex_r::register::ImpCbar::read().periphbase();
+    let periphbase = cortex_ar::register::ImpCbar::read().periphbase();
     println!("Found PERIPHBASE {:010p}", periphbase);
     let gicd_base = periphbase.wrapping_byte_add(GICD_BASE_OFFSET);
     let gicr_base = periphbase.wrapping_byte_add(GICR_BASE_OFFSET);
@@ -70,7 +70,7 @@ fn main() -> Result<(), core::fmt::Error> {
     println!("Enabling interrupts...");
     dump_cpsr();
     unsafe {
-        cortex_r::interrupt::enable();
+        cortex_ar::interrupt::enable();
     }
     dump_cpsr();
 
@@ -87,7 +87,7 @@ fn main() -> Result<(), core::fmt::Error> {
     );
 
     for _ in 0..1_000_000 {
-        cortex_r::asm::nop();
+        cortex_ar::asm::nop();
     }
 
     Ok(())

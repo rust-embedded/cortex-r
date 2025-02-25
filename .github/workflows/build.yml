@@ -36,7 +36,7 @@ jobs:
     runs-on: ubuntu-24.04
     strategy:
       matrix:
-        rust: [stable, 1.82]
+        rust: [stable, 1.59]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -231,7 +231,7 @@ jobs:
           rustup default stable
       - name: Run cargo test
         run: |
-          cargo test --manifest-path cortex-r/Cargo.toml
+          cargo test --manifest-path cortex-ar/Cargo.toml
 
   # Run some programs in QEMU
   qemu-test:

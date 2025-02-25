@@ -1,7 +1,22 @@
 [package]
-authors = ["Jonathan Pallant <jonathan.pallant@ferrous-systems.com>", "The Cortex-R Team <cortex-r@teams.rust-embedded.org>"]
+authors = [
+    "Jonathan Pallant <jonathan.pallant@ferrous-systems.com>",
+    "The Cortex-R Team <cortex-r@teams.rust-embedded.org>"
+]
+categories = [
+    "embedded",
+    "no-std",
+]
 description = "Run-time support for Arm Cortex-R"
 edition = "2021"
+keywords = [
+    "arm",
+    "cortex-r",
+    "embedded",
+    "no_std",
+    "no-std",
+    "run-time",
+]
 license = "MIT OR Apache-2.0"
 name = "cortex-r-rt"
 readme = "README.md"
@@ -10,7 +25,7 @@ rust-version = "1.82"
 version = "0.1.0"
 
 [dependencies]
-cortex-r = {version = "0.1.0", path = "../cortex-r"}
+cortex-ar = {version = "0.1.0", path = "../cortex-ar"}
 semihosting = {version = "0.1.18", features = ["stdio"]}
 
 [features]

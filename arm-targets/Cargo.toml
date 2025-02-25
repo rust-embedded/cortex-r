@@ -1,12 +1,16 @@
 [package]
-authors = ["Jonathan Pallant <jonathan.pallant@ferrous-systems.com>", "The Cortex-R Team <cortex-r@teams.rust-embedded.org>"]
+authors = [
+    "Jonathan Pallant <jonathan.pallant@ferrous-systems.com>",
+    "The Cortex-R Team <cortex-r@teams.rust-embedded.org>"
+]
+categories = ["development-tools::build-utils"]
 description = "Compile-time feature detection for Arm processors"
 edition = "2021"
 license = "MIT OR Apache-2.0"
 name = "arm-targets"
 readme = "README.md"
 repository = "https://github.com/rust-embedded/cortex-r.git"
-rust-version = "1.82"
+rust-version = "1.59"
 version = "0.1.0"
 
 [dependencies]
