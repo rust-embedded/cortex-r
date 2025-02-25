@@ -3,6 +3,10 @@ authors = [
     "Jonathan Pallant <jonathan.pallant@ferrous-systems.com>",
     "The Cortex-R Team <cortex-r@teams.rust-embedded.org>"
 ]
+categories = [
+    "embedded",
+    "no-std",
+]
 description = "Run-time support for Arm Cortex-R"
 edition = "2021"
 keywords = [
