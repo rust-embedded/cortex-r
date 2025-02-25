@@ -1,10 +1,18 @@
 [package]
 authors = [
     "Jonathan Pallant <jonathan.pallant@ferrous-systems.com>",
-    "The Cortex-R Team <cortex-r@teams.rust-embedded.org>"
+    "The Cortex-R Team <cortex-r@teams.rust-embedded.org>",
 ]
 description = "CPU support for AArch32 Arm Cortex-R and Arm Cortex-A"
 edition = "2021"
+keywords = [
+    "arm",
+    "cortex-a",
+    "cortex-r",
+    "embedded",
+    "no_std",
+    "no-std",
+]
 license = "MIT OR Apache-2.0"
 name = "cortex-ar"
 readme = "README.md"
