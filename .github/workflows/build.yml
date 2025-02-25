@@ -17,6 +17,7 @@ jobs:
           - armebv7r-none-eabihf
           - armv7r-none-eabi
           - armv7r-none-eabihf
+          - armv7a-none-eabihf
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -58,6 +59,7 @@ jobs:
           - armebv7r-none-eabi
           - armebv7r-none-eabihf
           - armv7r-none-eabi
+          - armv7a-none-eabihf
           - armv7r-none-eabihf
           - armv8r-none-eabihf
     steps:
@@ -88,6 +90,7 @@ jobs:
       matrix:
         rust: [stable, 1.82]
         target:
+          - armv7a-none-eabihf
           - armebv7r-none-eabi
           - armebv7r-none-eabihf
           - armv7r-none-eabi
@@ -178,6 +181,7 @@ jobs:
           - armebv7r-none-eabihf
           - armv7r-none-eabi
           - armv7r-none-eabihf
+          - armv7a-none-eabihf
     steps:
       - name: Checkout
         uses: actions/checkout@v4

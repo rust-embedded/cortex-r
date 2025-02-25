@@ -7,7 +7,8 @@ compile with older versions but that may change in any new patch release.
 
 ## Licence
 
-Copyright (c) Ferrous Systems, 2025
+* Copyright (c) Ferrous Systems
+* Copyright (c) The Rust Embedded Devices Working Group developers
 
 Licensed under either [MIT](./LICENSE-MIT) or [Apache-2.0](./LICENSE-APACHE) at
 your option.
