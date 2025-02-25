@@ -14,7 +14,6 @@ keywords = [
     "cortex-a",
     "cortex-r",
     "embedded",
-    "no_std",
     "no-std",
 ]
 license = "MIT OR Apache-2.0"

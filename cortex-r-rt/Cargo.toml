@@ -13,7 +13,6 @@ keywords = [
     "arm",
     "cortex-r",
     "embedded",
-    "no_std",
     "no-std",
     "run-time",
 ]
