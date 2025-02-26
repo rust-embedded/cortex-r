@@ -1,28 +1,18 @@
-//! SVC (software interrupt) example for Arm Cortex-R
+//! SVC (software interrupt) example
 
 #![no_std]
 #![no_main]
 
 // pull in our start-up code
-use cortex_ar as _;
-use cortex_r_examples as _;
+use versatileab as _;
 
 use semihosting::println;
 
-/// The entry-point to the Rust application.
-///
-/// It is called by the start-up code in `cortex-m-rt`.
-#[no_mangle]
-pub extern "C" fn kmain() {
-    if let Err(e) = main() {
-        panic!("main returned {:?}", e);
-    }
-}
+versatileab::entry_point!();
 
 /// The main function of our Rust application.
-///
-/// Called by [`kmain`].
-fn main() -> Result<(), core::fmt::Error> {
+#[export_name = "main"]
+fn main() -> ! {
     let x = 1;
     let y = x + 1;
     let z = (y as f64) * 1.5;
